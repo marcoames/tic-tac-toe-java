@@ -13,6 +13,7 @@ public class Training {
         int score = 0;
 
         while (!gameOver) {
+
             // Movimento da Rede Neural
             int bestMove = game.network_move_minimax();
             int realMove = game.neuralNetworkMove();
@@ -33,6 +34,8 @@ public class Training {
             boolean result = isGameOver();
             if (result) {
                 gameOver = true;
+                // this.game.printBoard();
+                // System.out.println("Rede Neural ganhou! score: " + score);
                 return getScore("Xganha", score);
             }
 
@@ -43,6 +46,8 @@ public class Training {
             result = isGameOver();
             if (result) {
                 gameOver = true;
+                // this.game.printBoard();
+                // System.out.println("Computador ganhou! score: " + score);
                 return getScore("Oganha", score);
             }
         }

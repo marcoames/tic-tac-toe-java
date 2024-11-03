@@ -14,7 +14,7 @@ public class NeuralNetwork {
             setWeightsFromChromosome(weights);
         }
     }
-    
+
     private void initializeRandomWeights() {
         Random random = new Random();
         weights1 = new double[9][9];
@@ -80,48 +80,57 @@ public class NeuralNetwork {
         return chromosome;
     }
 
-
     public double[] forward(int[] boardState) {
+        double[] hiddenLayerOutput = calculateHiddenLayerOutput(boardState);
+        return calculateOutputLayerOutput(hiddenLayerOutput);
+    }
+
+    private double[] calculateHiddenLayerOutput(int[] boardState) {
         double[] hiddenLayerInput = new double[9];
         for (int i = 0; i < 9; i++) {
+            hiddenLayerInput[i] = bias1[i];
             for (int j = 0; j < 9; j++) {
                 hiddenLayerInput[i] += boardState[j] * weights1[j][i];
             }
-            hiddenLayerInput[i] += bias1[i];
-        }
-        
-        double[] hiddenLayerOutput = new double[9];
-        for (int i = 0; i < 9; i++) {
-            hiddenLayerOutput[i] = Math.max(0, hiddenLayerInput[i]); // relu
         }
 
+        double[] hiddenLayerOutput = new double[9];
+        for (int i = 0; i < 9; i++) {
+            hiddenLayerOutput[i] = Math.max(0, hiddenLayerInput[i]);
+        }
+        return hiddenLayerOutput;
+    }
+
+    private double[] calculateOutputLayerOutput(double[] hiddenLayerOutput) {
         double[] outputLayerInput = new double[9];
         for (int i = 0; i < 9; i++) {
+            outputLayerInput[i] = bias2[i];
             for (int j = 0; j < 9; j++) {
                 outputLayerInput[i] += hiddenLayerOutput[j] * weights2[j][i];
             }
-            outputLayerInput[i] += bias2[i];
         }
-        
         return outputLayerInput;
     }
 
     public int getMove(int[] board) {
         double[] scores = forward(board);
         
-        int bestMove = 0;
-        for (int i = 1; i < scores.length; i++) {
-            if (scores[i] > scores[bestMove]) {
+        int bestMove = -1;
+        double bestScore = Double.NEGATIVE_INFINITY;
+        
+        for (int i = 0; i < scores.length; i++) {
+            // if (board[i] == 0 && scores[i] > bestScore) { // Only consider empty cells
+            if (scores[i] > bestScore) { 
+                bestScore = scores[i];
                 bestMove = i;
             }
         }
-        
         return bestMove;
     }
 
     public void printWeights() {
         double[] allWeights = getChromosome();
-        String format = "%." + 4 + "f";
+        String format = "%.4f";
         int index = 0;
         
         while (index < allWeights.length) {

@@ -8,7 +8,7 @@ public class PlayerXNeuralNetwork {
     }
 
     public void playGame() {
-        double[] chromosome = loadChromosomeFromCsv("best_chromosome.csv");
+        double[] chromosome = loadChromosomeFromCsv("tic-tac-toe-java/best_chromosome.csv");
         
         // Print neural network weights
         NeuralNetwork neuralNetwork = new NeuralNetwork(chromosome);

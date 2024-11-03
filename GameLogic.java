@@ -34,10 +34,11 @@ public class GameLogic {
 
     public int neuralNetworkMove() {
         List<Integer> availableMoves = getAvailableMoves();
+        // System.out.println(availableMoves);
         int move = neuralNetwork.getMove(this.board);
 
         if (!availableMoves.contains(move)) {
-            System.out.println("Rede jogou em " + (move + 1) + " jogada inválida");
+            // System.out.println("Rede jogou em " + (move + 1) + " jogada inválida");
             return -1;
         } else {
             this.board[move] = 2;

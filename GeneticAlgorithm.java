@@ -8,17 +8,18 @@ import java.util.Random;
 public class GeneticAlgorithm {
     private static final Random random = new Random(42);
 
-    public static double evaluate(Chromosome chromosome, Training training) {
+    public static double evaluate(Chromosome chromosome) {
         String[] difficulties = {"EASY", "MEDIUM", "HARD"};
         int[] weights = {1, 2, 3};
         double totalScore = 0;
 
         for (int i = 0; i < difficulties.length; i++) {
             double difficultyScore = 0;
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < 2; j++) { // numero de partidas em cada dificuldade
+                Training training = new Training();
                 difficultyScore += training.playGame(chromosome.getGenes(), difficulties[i]);
             }
-            totalScore += (weights[i] * difficultyScore) / 5;
+            totalScore += (weights[i] * difficultyScore);
         }
         return totalScore;
     }
@@ -57,7 +58,6 @@ public class GeneticAlgorithm {
 
     public static void geneticAlgorithm(int populationSize, int generations, double mutationRate, int tournamentSize) throws Exception {
         List<Chromosome> population = new ArrayList<>();
-        Training training = new Training();
 
         // Inicializar população
         for (int i = 0; i < populationSize; i++) {
@@ -70,26 +70,27 @@ public class GeneticAlgorithm {
         double globalBestScore = -Double.MAX_VALUE;
 
         for (int generation = 1; generation <= generations; generation++) {
-            System.out.printf("\nGeneration %d/%d%n", generation, generations);
+            // System.out.printf("\nGeneration %d/%d%n", generation, generations);
 
             // Avaliação
             for (Chromosome chromosome : population) {
-                double score = evaluate(chromosome, training);
+                double score = evaluate(chromosome);
                 chromosome.setScore(score);
             }
 
             // Ordenar população e encontrar o melhor
             population.sort(Comparator.comparingDouble(Chromosome::getScore).reversed());
 
-            for (Chromosome c : population) {
-                System.out.println(c.getScore());
-            }
+            // Exibir scores
+            // for (Chromosome cromosome : population) {
+            //     System.out.println(cromosome.getScore());
+            // }
 
             Chromosome bestChromosome = population.get(0);
             double bestScore = bestChromosome.getScore();
             bestScores.add(bestScore);
 
-            System.out.printf("Score: %.2f%n", bestScore);
+            System.out.printf("\nGeneration %d/%d BestScore: %.2f%n", generation, generations, bestScore);
 
             if (bestScore > globalBestScore) {
                 globalBestScore = bestScore;
@@ -105,7 +106,7 @@ public class GeneticAlgorithm {
                 Chromosome parent2 = tournamentSelection(population, tournamentSize);
                 Chromosome child = crossover(parent1, parent2);
                 child = mutate(child, mutationRate);
-                double childScore = evaluate(child, training);
+                double childScore = evaluate(child);
                 child.setScore(childScore);
                 newPopulation.add(child);
             }
@@ -115,9 +116,9 @@ public class GeneticAlgorithm {
 
         // Salvamento e exibição dos melhores resultados
         System.out.printf("\nGlobal Best Score: %.2f%n", globalBestScore);
-        saveBestChromosomeToCsv("best_chromosome.csv", globalBestChromosome.getGenes());
+        saveBestChromosomeToCsv("tic-tac-toe-java/best_chromosome.csv", globalBestChromosome.getGenes());
 
-        System.out.printf("Best neural network %d saved to 'best_chromosome.pkl'.%n", globalBestChromosome.hashCode());
+        System.out.printf("Best neural network saved to 'best_chromosome.csv'.%n");
 
         NeuralNetwork nn = new NeuralNetwork(globalBestChromosome.getGenes());
         nn.printWeights();
@@ -139,7 +140,6 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-
-        geneticAlgorithm(100, 100, 0.1, 3);
+        geneticAlgorithm(50, 1000, 0.1, 3);
     }
 }
