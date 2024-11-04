@@ -8,40 +8,39 @@ public class PlayerXNeuralNetwork {
     }
 
     public void playGame() {
-        double[] chromosome = loadChromosomeFromCsv("tic-tac-toe-java/best_chromosome.csv");
+        double[] chromosome = loadChromosomeFromCsv("best_chromosome.csv");
         
         // Print neural network weights
         NeuralNetwork neuralNetwork = new NeuralNetwork(chromosome);
-        game.setNeuralNetwork(chromosome);  // Ensure this method correctly initializes the network
-        System.out.println("Neural Network weights:");
+        game.setNeuralNetwork(chromosome);
         neuralNetwork.printWeights();
 
         // Start the game
         boolean gameOver = false;
 
         while (!gameOver) {
-            // USER TURN
+
+            // usuario joga
             System.out.println("Current Board:");
             game.printBoard();
             game.userMove();
             game.printBoard();
 
-            // Check if the game is over
+            // verifica se jogo acabou
             if (checkGameOver()) {
                 gameOver = true;
                 break;
             }
-
-            // AI TURN
-            // Neural Network plays
+ 
+            // rede joga
             int move = game.neuralNetworkMove();
 
             if (move == -1) {
                 game.printBoard();
-                return; // Invalid
+                return; // movimento invalido
             }
 
-            // Check if the game is over after AI move
+            // verifica se jogo acabou
             if (checkGameOver()) {
                 gameOver = true;
                 System.out.println("Current Board:");
@@ -51,16 +50,15 @@ public class PlayerXNeuralNetwork {
         }
     }
 
-    // Check if the game is over
     private boolean checkGameOver() {
         String realResult = game.checkWinner();
 
         if (!realResult.equals("Temjogo")) {
             game.printBoard();
-            System.out.println("Real game result: " + realResult);
-            return true;  // Game is over
+            System.out.println("Game result: " + realResult);
+            return true;  
         }
-        return false;  // Game continues
+        return false; 
     }
 
     public double[] loadChromosomeFromCsv(String fileName) {
@@ -84,7 +82,6 @@ public class PlayerXNeuralNetwork {
         return chromosome;
     }
 
-    // Main method
     public static void main(String[] args) {
         PlayerXNeuralNetwork game = new PlayerXNeuralNetwork();
         game.playGame();

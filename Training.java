@@ -14,23 +14,23 @@ public class Training {
 
         while (!gameOver) {
 
-            // Movimento da Rede Neural
+            // movimento da Rede Neural
             int bestMove = game.network_move_minimax();
             int realMove = game.neuralNetworkMove();
 
             // System.out.println("Best move: " + (bestMove+1) + " Real move: " + (realMove+1));
             
-            // Se a jogada não for válida, a rede neural perde automaticamente
+            // se a jogada nao for valida a rede neural perde automaticamente
             if (realMove == -1) {
                 return -1;
             }
 
-            // Verifica se a jogada da rede neural corresponde à jogada ideal
+            // verifica se a jogada da rede neural corresponde a melhor jogada gerada pelo minimax da rede, se sim adiciona 1 ponto
             if (realMove == bestMove) {
                 score += 1;
             }
 
-            // Verificar se o jogo terminou após a jogada da rede neural
+            // verifica se o jogo terminou depois da jogada da rede neural
             boolean result = isGameOver();
             if (result) {
                 gameOver = true;
@@ -39,10 +39,10 @@ public class Training {
                 return getScore("Xganha", score);
             }
 
-            // Movimento do Computador
+            // movimento do Computador
             game.computerMove(gameDifficulty);
 
-            // Verificar se o jogo terminou após a jogada do computador
+            // verifica se o jogo terminou depois da jogada do computador
             result = isGameOver();
             if (result) {
                 gameOver = true;
@@ -65,12 +65,12 @@ public class Training {
 
     private int getScore(String result, int score) {
         if (result == "Xganha") {
-            score += 5;
+            score += 10;
             return score;
         } else if (result == "Oganha") {
             return score;
         } else {
-            score += 2;
+            score += 5;
             return score;
         }
     }

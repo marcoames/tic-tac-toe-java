@@ -12,12 +12,13 @@ public class GeneticAlgorithm {
         String[] difficulties = {"EASY", "MEDIUM", "HARD"};
         int[] weights = {1, 2, 3};
         double totalScore = 0;
+        int gamesPerDifficulty = 5;
 
         for (int i = 0; i < difficulties.length; i++) {
             double difficultyScore = 0;
-            for (int j = 0; j < 2; j++) { // numero de partidas em cada dificuldade
+            for (int j = 0; j < gamesPerDifficulty; j++) { // numero de partidas em cada dificuldade
                 Training training = new Training();
-                difficultyScore += training.playGame(chromosome.getGenes(), difficulties[i]);
+                difficultyScore += training.playGame(chromosome.getGenes(), difficulties[i]) / gamesPerDifficulty ;
             }
             totalScore += (weights[i] * difficultyScore);
         }
@@ -90,7 +91,7 @@ public class GeneticAlgorithm {
             double bestScore = bestChromosome.getScore();
             bestScores.add(bestScore);
 
-            System.out.printf("\nGeneration %d/%d BestScore: %.2f%n", generation, generations, bestScore);
+            System.out.printf("Generation %d/%d BestScore: %.2f%n", generation, generations, bestScore);
 
             if (bestScore > globalBestScore) {
                 globalBestScore = bestScore;
@@ -116,12 +117,11 @@ public class GeneticAlgorithm {
 
         // Salvamento e exibição dos melhores resultados
         System.out.printf("\nGlobal Best Score: %.2f%n", globalBestScore);
-        saveBestChromosomeToCsv("tic-tac-toe-java/best_chromosome.csv", globalBestChromosome.getGenes());
-
-        System.out.printf("Best neural network saved to 'best_chromosome.csv'.%n");
+        saveBestChromosomeToCsv("best_chromosome.csv", globalBestChromosome.getGenes());
 
         NeuralNetwork nn = new NeuralNetwork(globalBestChromosome.getGenes());
         nn.printWeights();
+
     }
 
     public static void saveBestChromosomeToCsv(String fileName, double[] chromosome) {
@@ -140,6 +140,6 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(50, 1000, 0.1, 3);
+        geneticAlgorithm(10, 1000, 0.1, 3);
     }
 }

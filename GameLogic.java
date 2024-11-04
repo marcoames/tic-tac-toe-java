@@ -9,12 +9,12 @@ public class GameLogic {
     private NeuralNetwork neuralNetwork;
 
     public GameLogic() {
-        // Cria o tabuleiro vazio
+        // cria o tabuleiro vazio
         this.board = new int[9];
     }
 
     public void setNeuralNetwork(double[] chromosome) {
-        // Define uma rede neural específica para o jogo
+        // define uma rede neural para o jogo com o cromossomo 
         this.neuralNetwork = new NeuralNetwork(chromosome);
     }
 
@@ -34,11 +34,10 @@ public class GameLogic {
 
     public int neuralNetworkMove() {
         List<Integer> availableMoves = getAvailableMoves();
-        // System.out.println(availableMoves);
         int move = neuralNetwork.getMove(this.board);
 
         if (!availableMoves.contains(move)) {
-            // System.out.println("Rede jogou em " + (move + 1) + " jogada inválida");
+            // System.out.println("Rede jogou em " + (move + 1) + " jogada invalida");
             return -1;
         } else {
             this.board[move] = 2;
@@ -56,7 +55,7 @@ public class GameLogic {
         int bestMove = -1;
         for (int i = 0; i < 9; i++) {
             if (this.board[i] == 0) {
-                this.board[i] = 2;
+                this.board[i] = 2; // marca com "X"
                 int score = network_minimax(0, false, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 this.board[i] = 0;
                 if (score > bestScore) {
@@ -78,7 +77,7 @@ public class GameLogic {
             int maxEval = Integer.MIN_VALUE;
             for (int i = 0; i < 9; i++) {
                 if (this.board[i] == 0) {
-                    this.board[i] = 2;
+                    this.board[i] = 2; // marca com "X"
                     int eval = computer_minimax(depth + 1, false, alpha, beta);
                     this.board[i] = 0;
                     maxEval = Math.max(maxEval, eval);
@@ -91,7 +90,7 @@ public class GameLogic {
             int minEval = Integer.MAX_VALUE;
             for (int i = 0; i < 9; i++) {
                 if (this.board[i] == 0) {
-                    this.board[i] = 1;
+                    this.board[i] = 1; // marca com "O"
                     int eval = network_minimax(depth + 1, true, alpha, beta);
                     this.board[i] = 0;
                     minEval = Math.min(minEval, eval);
@@ -144,7 +143,7 @@ public class GameLogic {
         int bestMove = -1;
         for (int i = 0; i < 9; i++) {
             if (this.board[i] == 0) {
-                this.board[i] = 1;
+                this.board[i] = 1; // marca com "O"
                 int score = computer_minimax(0, false, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 this.board[i] = 0;
                 if (score > bestScore) {
@@ -166,7 +165,7 @@ public class GameLogic {
             int maxEval = Integer.MIN_VALUE;
             for (int i = 0; i < 9; i++) {
                 if (this.board[i] == 0) {
-                    this.board[i] = 1;
+                    this.board[i] = 1; // marca com "O"
                     int eval = computer_minimax(depth + 1, false, alpha, beta);
                     this.board[i] = 0;
                     maxEval = Math.max(maxEval, eval);
@@ -179,9 +178,9 @@ public class GameLogic {
             int minEval = Integer.MAX_VALUE;
             for (int i = 0; i < 9; i++) {
                 if (this.board[i] == 0) {
-                    this.board[i] = 2;
+                    this.board[i] = 2; // marca com "X"
                     int eval = computer_minimax(depth + 1, true, alpha, beta);
-                    this.board[i] = 0;
+                    this.board[i] = 0; 
                     minEval = Math.min(minEval, eval);
                     beta = Math.min(beta, eval);
                     if (beta <= alpha) break;
