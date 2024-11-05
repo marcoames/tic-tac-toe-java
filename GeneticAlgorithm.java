@@ -159,9 +159,8 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 10000, 0.1, 3);
-        // game - populationSize - generations - mutationRate - elitism - results
-        // 5    - 10             - 10000       - 0.1           - 3      - 60
-        // 5    - 20             - 10000       - 0.1           - 3      - ?
+        geneticAlgorithm(10, 5000, 0.1, 3);
+        // games - populationSize - generations - mutationRate - elitism - results
+        // 5     - 10             - 5000        - 0.1           - 3      - 60
     }
 }
