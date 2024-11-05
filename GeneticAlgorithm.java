@@ -162,5 +162,6 @@ public class GeneticAlgorithm {
         geneticAlgorithm(10, 10000, 0.1, 3);
         // game - populationSize - generations - mutationRate - elitism - results
         // 5    - 10             - 10000       - 0.1           - 3      - 60
+        // 5    - 20             - 10000       - 0.1           - 3      - ?
     }
 }
