@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 public class GeneticAlgorithm {
-    private static final Random random = new Random(42);
+    private static final Random random = new Random();
 
     public static double evaluate(Chromosome chromosome) {
         String[] difficulties = {"EASY", "MEDIUM", "HARD"};
@@ -24,6 +24,7 @@ public class GeneticAlgorithm {
         }
         return totalScore;
     }
+    
 
     public static Chromosome mutate(Chromosome chromosome, double mutationRate) {
         double[] mutatedGenes = chromosome.getGenes().clone();
@@ -31,7 +32,7 @@ public class GeneticAlgorithm {
             mutatedGenes[i] += mutationRate * random.nextGaussian();
             mutatedGenes[i] = Math.max(-1, Math.min(1, mutatedGenes[i])); // Clipping
         }
-        return new Chromosome(mutatedGenes, 0.0);  // Score 0 inicial para novo cromossomo
+        return new Chromosome(mutatedGenes, 0.0);  // score 0 inicial para novo cromossomo
     }
 
     public static Chromosome crossover(Chromosome chromosome1, Chromosome chromosome2) {
@@ -43,7 +44,7 @@ public class GeneticAlgorithm {
         System.arraycopy(genes1, 0, newGenes, 0, crossoverPoint);
         System.arraycopy(genes2, crossoverPoint, newGenes, crossoverPoint, genes2.length - crossoverPoint);
 
-        return new Chromosome(newGenes, 0.0);  // Score 0 inicial para novo cromossomo
+        return new Chromosome(newGenes, 0.0);  // score 0 inicial para novo cromossomo
     }
 
     public static Chromosome tournamentSelection(List<Chromosome> population, int tournamentSize) {
@@ -60,7 +61,7 @@ public class GeneticAlgorithm {
     public static void geneticAlgorithm(int populationSize, int generations, double mutationRate, int tournamentSize) throws Exception {
         List<Chromosome> population = new ArrayList<>();
 
-        // Inicializar população
+        // inicializa a populacao com cromossomos aleatorios (vetor 180 elementos)
         for (int i = 0; i < populationSize; i++) {
             double[] genes = random.doubles(180, -1, 1).toArray();
             population.add(new Chromosome(genes, 0.0));
@@ -73,16 +74,16 @@ public class GeneticAlgorithm {
         for (int generation = 1; generation <= generations; generation++) {
             // System.out.printf("\nGeneration %d/%d%n", generation, generations);
 
-            // Avaliação
+            // funcao de avaliacao de cada cromossomo
             for (Chromosome chromosome : population) {
                 double score = evaluate(chromosome);
                 chromosome.setScore(score);
             }
 
-            // Ordenar população e encontrar o melhor
+            // ordena a populacao de maior score para menor
             population.sort(Comparator.comparingDouble(Chromosome::getScore).reversed());
 
-            // Exibir scores
+            // exibir os scores
             // for (Chromosome cromosome : population) {
             //     System.out.println(cromosome.getScore());
             // }
@@ -90,28 +91,33 @@ public class GeneticAlgorithm {
             Chromosome bestChromosome = population.get(0);
             double bestScore = bestChromosome.getScore();
             bestScores.add(bestScore);
-
-            System.out.printf("Generation %d/%d BestScore: %.2f%n", generation, generations, bestScore);
-
-            if (bestScore > globalBestScore) {
+            
+            if (bestScore >= globalBestScore) {
                 globalBestScore = bestScore;
                 globalBestChromosome = bestChromosome;
             }
+            
+            System.out.printf("Generation %d/%d\t BestScore: %.2f \tGlobalBestScore: %.2f%n", generation, generations, bestScore, globalBestScore);
 
-            // Nova população
+            // nova populacao
             List<Chromosome> newPopulation = new ArrayList<>();
-            newPopulation.add(bestChromosome);  // Elitismo
+
+            // elitismo passa melhores chromossomos para a nova populacao
+            newPopulation.add(bestChromosome);              // melhor
+            newPopulation.add(population.get(1));     // 2 melhor
+            newPopulation.add(population.get(2));     // 3 melhor
 
             while (newPopulation.size() < populationSize) {
                 Chromosome parent1 = tournamentSelection(population, tournamentSize);
                 Chromosome parent2 = tournamentSelection(population, tournamentSize);
                 Chromosome child = crossover(parent1, parent2);
                 child = mutate(child, mutationRate);
-                double childScore = evaluate(child);
-                child.setScore(childScore);
+                // double childScore = evaluate(child);
+                // child.setScore(childScore);
                 newPopulation.add(child);
             }
 
+            // atualiza a populacao
             population = newPopulation;
         }
 
@@ -122,13 +128,15 @@ public class GeneticAlgorithm {
         NeuralNetwork nn = new NeuralNetwork(globalBestChromosome.getGenes());
         nn.printWeights();
 
+        saveScoresToFile((ArrayList<Double>) bestScores, "best_scores.txt");
+
     }
 
     public static void saveBestChromosomeToCsv(String fileName, double[] chromosome) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (double gene : chromosome) {
                 writer.write(Double.toString(gene));
-                writer.write(",");  // Separate values with commas
+                writer.write(",");
             }
             writer.newLine();
             System.out.printf("Best neural network saved to '%s'.%n", fileName);
@@ -138,8 +146,21 @@ public class GeneticAlgorithm {
     }
 
 
+    public static void saveScoresToFile(ArrayList<Double> bestScores, String filename) {
+        try (FileWriter writer = new FileWriter(filename)) {
+            for (Double score : bestScores) {
+                writer.write(score.toString() + "\n");
+            }
+            System.out.println("Scores saved to " + filename);
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving scores: " + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 1000, 0.1, 3);
+        geneticAlgorithm(10, 10000, 0.1, 3);
+        // game - populationSize - generations - mutationRate - elitism - results
+        // 5    - 10             - 10000       - 0.1           - 3      - 60
     }
 }

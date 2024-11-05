@@ -2,34 +2,23 @@ import java.util.Arrays;
 import java.util.Random;
 
 /*
-    Entrada (9)                  Camada Oculta (9 )                       Saída (9)
+
+    - Entrada (9) --> Camada Oculta (9) --> Saida (9)
     
-    boardState[0] ----\          weights1[0][0] ----> (ReLU)              weights2[0][0] ----> saída[0]
-    boardState[1] -----\         weights1[1][1] ----> (ReLU)              weights2[1][0] ----> saída[1]
-    boardState[2] ------\        weights1[2][2] ----> (ReLU)              weights2[2][0] ----> saída[2]
-    boardState[3] -------\       weights1[3][3] ----> (ReLU)              weights2[3][0] ----> saída[3]
-    boardState[4] --------\      weights1[4][4] ----> (ReLU)              weights2[4][0] ----> saída[4]
-    boardState[5] ---------\     weights1[5][5] ----> (ReLU)              weights2[5][0] ----> saída[5]
-    boardState[6] ----------\    weights1[6][6] ----> (ReLU)              weights2[6][0] ----> saída[6]
-    boardState[7] -----------\   weights1[7][7] ----> (ReLU)              weights2[7][0] ----> saída[7]
-    boardState[8] ------------\  weights1[8][8] ----> (ReLU)              weights2[8][0] ----> saída[8]
-    
-    Onde:
-    
-    - boardState: representa o estado do tabuleiro, com cada posição sendo 0, 1 ou 2.
-    - weights1[i][j]: são os pesos da camada de entrada para a camada oculta.
-    - weights2[i][j]: são os pesos da camada oculta para a camada de saída.
-    - bias1 e bias2: são os biases das camadas oculta e de saída.
-    - (ReLU): uma função de ativação que aplica ReLU (Rectified Linear Unit) na camada oculta.
-    
+    - boardState: estado do tabuleiro, com cada posicao sendo 0, 1 ou 2 (vazio, 0 ou X).
+    - weights1[i][j]: pesos da camada de entrada para a camada oculta.
+    - weights2[i][j]: pesos da camada oculta para a camada de saida.
+    - bias1 e bias2: bias na camada oculta e na camada de saida.
+    - funcao de ativacao ReLU na camada oculta, relu(x) = max(0, x).
+
 */
 
 
 public class NeuralNetwork {
-    private double[][] weights1 = new double[9][9]; // primeira camada de pesos (9x9)
-    private double[] bias1 = new double[9];         // bias primeira camada (9 valores)
-    private double[][] weights2 = new double[9][9]; // segunda camada de pesos (9x9)
-    private double[] bias2 = new double[9];         // bias segunda camada (9 valores)  
+    private double[][] weights1 = new double[9][9];     // camada oculta pesos (9x9)
+    private double[] bias1 = new double[9];             // bias camada oculta (9 valores)
+    private double[][] weights2 = new double[9][9];     // camada de saida pesos (9x9)
+    private double[] bias2 = new double[9];             // bias camada de saida (9 valores)  
 
     public NeuralNetwork(double[] weights) {
         if (weights == null) {

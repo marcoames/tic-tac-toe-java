@@ -7,10 +7,12 @@ import java.util.stream.IntStream;
 public class GameLogic {
     private int[] board;
     private NeuralNetwork neuralNetwork;
+    private boolean randomFlag;
 
     public GameLogic() {
         // cria o tabuleiro vazio
         this.board = new int[9];
+        this.randomFlag = true;
     }
 
     public void setNeuralNetwork(double[] chromosome) {
@@ -119,10 +121,20 @@ public class GameLogic {
     }
 
     public void computerMove(String difficulty) {
-        if (difficulty.equals("EASY") && Math.random() < 0.75 ||
-            difficulty.equals("MEDIUM") && Math.random() < 0.5) {
-            computerMoveRandom();
-        } else {
+        if (difficulty.equals("EASY")) { // joga minimax 25% das vezes
+            if (Math.random() < 0.75) {
+                computerMoveRandom();
+            } else {
+                computerMoveMinimax();
+            }
+        } else if (difficulty.equals("MEDIUM")) { // alterna entre random e minimax
+            if (this.randomFlag) { 
+                computerMoveRandom();
+            } else {
+                computerMoveMinimax();
+            }
+            this.randomFlag = !randomFlag;
+        } else if (difficulty.equals("HARD")) { // sempre joga minimax
             computerMoveMinimax();
         }
     }
