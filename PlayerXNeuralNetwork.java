@@ -10,12 +10,12 @@ public class PlayerXNeuralNetwork {
     public void playGame() {
         double[] chromosome = loadChromosomeFromCsv("best_chromosome.csv");
         
-        // Print neural network weights
+        // define uma rede neural para o jogo com o cromossomo importado
         NeuralNetwork neuralNetwork = new NeuralNetwork(chromosome);
         game.setNeuralNetwork(chromosome);
         neuralNetwork.printWeights();
 
-        // Start the game
+        
         boolean gameOver = false;
 
         while (!gameOver) {

@@ -2,22 +2,17 @@ import java.util.Arrays;
 import java.util.Random;
 
 /*
-
     - Entrada (9) --> Camada Oculta (9) --> Saida (9)
-    
     - boardState: estado do tabuleiro, com cada posicao sendo 0, 1 ou 2 (vazio, 0 ou X).
     - weights1[i][j]: pesos da camada de entrada para a camada oculta.
     - weights2[i][j]: pesos da camada oculta para a camada de saida.
     - bias1 e bias2: bias na camada oculta e na camada de saida.
-    - funcao de ativacao ReLU na camada oculta, relu(x) = max(0, x).
-
 */
 
-
 public class NeuralNetwork {
-    private double[][] weights1 = new double[9][9];     // camada oculta pesos (9x9)
+    private double[][] weights1 = new double[9][9];     // pesos da camada oculta (9x9)
     private double[] bias1 = new double[9];             // bias camada oculta (9 valores)
-    private double[][] weights2 = new double[9][9];     // camada de saida pesos (9x9)
+    private double[][] weights2 = new double[9][9];     // pesos da camada de saida (9x9)
     private double[] bias2 = new double[9];             // bias camada de saida (9 valores)  
 
     public NeuralNetwork(double[] weights) {
@@ -43,7 +38,7 @@ public class NeuralNetwork {
 
     public void setWeightsFromChromosome(double[] weights) {
         // verifica se cromossomo do tamanho certo
-        if (weights.length != 180) throw new IllegalArgumentException("Expected 180 weights, but got " + weights.length);
+        if (weights.length != 180) throw new IllegalArgumentException("Esperava 180 pesos, recebeu " + weights.length);
         
         // index para posicoes do cromossomo
         int index = 0;
@@ -69,14 +64,17 @@ public class NeuralNetwork {
     }
 
     public double[] forward(int[] boardState) {
+
+        // boardState -> camadaOculta
         double[] hiddenLayerOutput = new double[9];
         for (int i = 0; i < 9; i++) {
             hiddenLayerOutput[i] = bias1[i];
             for (int j = 0; j < 9; j++) hiddenLayerOutput[i] += boardState[j] * weights1[j][i];
-            hiddenLayerOutput[i] = Math.max(0, hiddenLayerOutput[i]); // ReLU (funcao de ativacao)
+            // hiddenLayerOutput[i] = Math.max(0, hiddenLayerOutput[i]); // ReLU (funcao de ativacao)
+            hiddenLayerOutput[i] = Math.tanh(hiddenLayerOutput[i]); // tangente hiperbolica (funcao de ativacao)
         }
 
-        // array com a saida da rede
+        // camadaOculta -> saida
         double[] outputLayer = new double[9];
         for (int i = 0; i < 9; i++) {
             outputLayer[i] = bias2[i];
@@ -90,7 +88,7 @@ public class NeuralNetwork {
         int bestMove = -1;
         double bestScore = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < scores.length; i++) {
-            // if (board[i] == 0 && scores[i] > bestScore) { // Only consider empty cells
+            // if (board[i] == 0 && scores[i] > bestScore) { // se for jogar so considerando espacos vazios
             if (scores[i] > bestScore) {
                 bestScore = scores[i];
                 bestMove = i;
@@ -100,10 +98,10 @@ public class NeuralNetwork {
     }
 
     public void printWeights() {
-        System.out.println("Neural Network Weights:");
+        System.out.println("Neural Network:");
         
         // Print weights1 as 9x9 matrix
-        System.out.println("Weights1 (Input to Hidden Layer):");
+        System.out.println("Weights1 (Entrada --> Camada Oculta):");
         for (int i = 0; i < 9; i++) {
             System.out.print("[ ");
             for (int j = 0; j < 9; j++) {
@@ -113,7 +111,7 @@ public class NeuralNetwork {
         }
         
         // Print bias1 as a vector
-        System.out.println("\nBias1 (Hidden Layer Bias):");
+        System.out.println("\nBias1 (Camada Oculta bias):");
         System.out.print("[ ");
         for (double b : bias1) {
             System.out.printf("%.4f ", b);
@@ -121,7 +119,7 @@ public class NeuralNetwork {
         System.out.println("]");
     
         // Print weights2 as 9x9 matrix
-        System.out.println("\nWeights2 (Hidden to Output Layer):");
+        System.out.println("\nWeights2 (Camada Oculta --> Saida):");
         for (int i = 0; i < 9; i++) {
             System.out.print("[ ");
             for (int j = 0; j < 9; j++) {
@@ -131,7 +129,7 @@ public class NeuralNetwork {
         }
     
         // Print bias2 as a vector
-        System.out.println("\nBias2 (Output Layer Bias):");
+        System.out.println("\nBias2 (Saida bias):");
         System.out.print("[ ");
         for (double b : bias2) {
             System.out.printf("%.4f ", b);

@@ -25,17 +25,17 @@ public class GeneticAlgorithm {
         return totalScore;
     }
     
-
     public static Chromosome mutate(Chromosome chromosome, double mutationRate) {
         double[] mutatedGenes = chromosome.getGenes().clone();
         for (int i = 0; i < mutatedGenes.length; i++) {
             mutatedGenes[i] += mutationRate * random.nextGaussian();
-            mutatedGenes[i] = Math.max(-1, Math.min(1, mutatedGenes[i])); // Clipping
+            mutatedGenes[i] = Math.max(-1, Math.min(1, mutatedGenes[i])); // garantir valores entre -1 e 1
         }
         return new Chromosome(mutatedGenes, 0.0);  // score 0 inicial para novo cromossomo
     }
 
-    public static Chromosome crossover(Chromosome chromosome1, Chromosome chromosome2) {
+    // crossover usando crossover point
+    public static Chromosome crossoverPoint(Chromosome chromosome1, Chromosome chromosome2) {
         double[] genes1 = chromosome1.getGenes();
         double[] genes2 = chromosome2.getGenes();
         int crossoverPoint = random.nextInt(genes1.length - 1) + 1;
@@ -46,6 +46,20 @@ public class GeneticAlgorithm {
 
         return new Chromosome(newGenes, 0.0);  // score 0 inicial para novo cromossomo
     }
+
+    // crossover usando media
+    public static Chromosome crossover(Chromosome chromosome1, Chromosome chromosome2) {
+        double[] genes1 = chromosome1.getGenes();
+        double[] genes2 = chromosome2.getGenes();
+        double[] newGenes = new double[genes1.length];
+
+        for (int i = 0; i < genes1.length; i++) {
+            newGenes[i] = (genes1[i] + genes2[i]) / 2.0; // media dos genes correspondentes
+        }
+
+        return new Chromosome(newGenes, 0.0);  // score 0 inicial para o novo cromossomo
+    }
+
 
     public static Chromosome tournamentSelection(List<Chromosome> population, int tournamentSize) {
         List<Chromosome> tournament = new ArrayList<>();
@@ -159,7 +173,7 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 5000, 0.1, 3);
+        geneticAlgorithm(10, 1000, 0.1, 3);
         // games - populationSize - generations - mutationRate - elitism - results
         // 5     - 10             - 5000        - 0.1           - 3      - 60
     }

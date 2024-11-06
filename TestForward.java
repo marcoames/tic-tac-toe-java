@@ -3,6 +3,18 @@ import java.util.Arrays;
 public class TestForward {
     public static void main(String[] args) {
         // Exemplo de board
+
+        // rede X, computador/player O
+
+        /* 
+           | O | X
+         --+---+--
+           | X | O
+         --+---+--
+         O |   | X
+          
+        */
+
         int[] boardState = {
             0, 1, 2,  
             0, 2, 1,
@@ -19,7 +31,8 @@ public class TestForward {
 
         double[] output = neuralNetwork.forward(boardState);
 
-        System.out.println("\nOutput Layer Values:");
+        System.out.println("\nValores da camada de saida:");
         System.out.println(Arrays.toString(output));
+
     }
 }
