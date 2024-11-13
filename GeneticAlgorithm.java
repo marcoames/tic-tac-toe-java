@@ -12,7 +12,7 @@ public class GeneticAlgorithm {
         String[] difficulties = {"EASY", "MEDIUM", "HARD"};
         int[] weights = {1, 2, 3};
         double totalScore = 0;
-        int gamesPerDifficulty = 5;
+        int gamesPerDifficulty = 3;
 
         for (int i = 0; i < difficulties.length; i++) {
             double difficultyScore = 0;
@@ -28,8 +28,7 @@ public class GeneticAlgorithm {
     public static Chromosome mutate(Chromosome chromosome, double mutationRate) {
         double[] mutatedGenes = chromosome.getGenes().clone();
         for (int i = 0; i < mutatedGenes.length; i++) {
-            mutatedGenes[i] += mutationRate * random.nextGaussian();
-            mutatedGenes[i] = Math.max(-1, Math.min(1, mutatedGenes[i])); // garantir valores entre -1 e 1
+            mutatedGenes[i] = (2 * random.nextDouble()) - 1; // random entre -1 e 1
         }
         return new Chromosome(mutatedGenes, 0.0);  // score 0 inicial para novo cromossomo
     }
@@ -117,9 +116,9 @@ public class GeneticAlgorithm {
             List<Chromosome> newPopulation = new ArrayList<>();
 
             // elitismo passa melhores chromossomos para a nova populacao
-            newPopulation.add(bestChromosome);              // melhor
-            newPopulation.add(population.get(1));     // 2 melhor
-            newPopulation.add(population.get(2));     // 3 melhor
+            newPopulation.add(bestChromosome);           // melhor
+            // newPopulation.add(population.get(1));     // 2 melhor
+            // newPopulation.add(population.get(2));     // 3 melhor
 
             while (newPopulation.size() < populationSize) {
                 Chromosome parent1 = tournamentSelection(population, tournamentSize);
@@ -137,12 +136,12 @@ public class GeneticAlgorithm {
 
         // Salvamento e exibição dos melhores resultados
         System.out.printf("\nGlobal Best Score: %.2f%n", globalBestScore);
-        saveBestChromosomeToCsv("best_chromosome.csv", globalBestChromosome.getGenes());
+        saveBestChromosomeToCsv("./tic-tac-toe-java/best_chromosome.csv", globalBestChromosome.getGenes());
 
         NeuralNetwork nn = new NeuralNetwork(globalBestChromosome.getGenes());
         nn.printWeights();
 
-        saveScoresToFile((ArrayList<Double>) bestScores, "best_scores.txt");
+        saveScoresToFile((ArrayList<Double>) bestScores, "./tic-tac-toe-java/best_scores.txt");
 
     }
 
@@ -173,7 +172,7 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 1000, 0.1, 3);
+        geneticAlgorithm(10, 1000, 0.1, 4);
         // games - populationSize - generations - mutationRate - elitism - results
         // 5     - 10             - 5000        - 0.1           - 3      - 60
     }

@@ -27,7 +27,7 @@ public class Training {
 
             // verifica se a jogada da rede neural corresponde a melhor jogada gerada pelo minimax da rede, se sim adiciona 1 ponto
             if (realMove == bestMove) {
-                score += 1;
+               score += 1;
             }
 
             // verifica se o jogo terminou depois da jogada da rede neural
@@ -68,6 +68,7 @@ public class Training {
             score += 10;
             return score;
         } else if (result == "Oganha") {
+            score += 2.5;
             return score;
         } else {
             score += 5;

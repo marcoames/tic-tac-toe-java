@@ -8,7 +8,7 @@ public class PlayerXNeuralNetwork {
     }
 
     public void playGame() {
-        double[] chromosome = loadChromosomeFromCsv("best_chromosome.csv");
+        double[] chromosome = loadChromosomeFromCsv("./tic-tac-toe-java/best_chromosome.csv");
         
         // define uma rede neural para o jogo com o cromossomo importado
         NeuralNetwork neuralNetwork = new NeuralNetwork(chromosome);
