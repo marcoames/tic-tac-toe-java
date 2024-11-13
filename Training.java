@@ -6,73 +6,47 @@ public class Training {
     }
 
     public int playGame(double[] chromosome, String gameDifficulty) {
-
         game.setNeuralNetwork(chromosome);
 
-        boolean gameOver = false;
         int score = 0;
 
-        while (!gameOver) {
-
-            // movimento da Rede Neural
-            int bestMove = game.network_move_minimax();
+        while (true) {
+            
+            // jogada da rede
             int realMove = game.neuralNetworkMove();
 
-            // System.out.println("Best move: " + (bestMove+1) + " Real move: " + (realMove+1));
-            
-            // se a jogada nao for valida a rede neural perde automaticamente
+            // se jogada invalida perde 10 pontos e acaba o jogo
             if (realMove == -1) {
-                return -1;
+                return -10;  
             }
 
-            // verifica se a jogada da rede neural corresponde a melhor jogada gerada pelo minimax da rede, se sim adiciona 1 ponto
-            if (realMove == bestMove) {
-               score += 1;
+            // verifica se jogo acabou depois da jogada da rede           
+            if (isGameOver()) {
+                return getScore("Xganha", score);  // rede ganha
             }
 
-            // verifica se o jogo terminou depois da jogada da rede neural
-            boolean result = isGameOver();
-            if (result) {
-                gameOver = true;
-                // this.game.printBoard();
-                // System.out.println("Rede Neural ganhou! score: " + score);
-                return getScore("Xganha", score);
-            }
-
-            // movimento do Computador
+            // jogada do computador
             game.computerMove(gameDifficulty);
 
-            // verifica se o jogo terminou depois da jogada do computador
-            result = isGameOver();
-            if (result) {
-                gameOver = true;
-                // this.game.printBoard();
-                // System.out.println("Computador ganhou! score: " + score);
-                return getScore("Oganha", score);
+            // verifica se jogo acabou depois da jogada do computador
+            if (isGameOver()) {
+                return getScore("Oganha", score);  // computador ganha
             }
         }
-        
-        return score;
     }
 
     private boolean isGameOver() {
         String result = game.checkWinner();
-        if (result != "Temjogo") {
-            return true;
-        }
-        return false;
+        return !result.equals("Temjogo");  // jogo acabou
     }
 
     private int getScore(String result, int score) {
-        if (result == "Xganha") {
-            score += 10;
-            return score;
-        } else if (result == "Oganha") {
-            score += 2.5;
-            return score;
+        if (result.equals("Xganha")) {
+            return score + 20;  // rede ganha
+        } else if (result.equals("Oganha")) {
+            return score + 5;  // computador ganha
         } else {
-            score += 5;
-            return score;
+            return score + 10;  // empate
         }
     }
 }

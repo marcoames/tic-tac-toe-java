@@ -12,7 +12,7 @@ public class GeneticAlgorithm {
         String[] difficulties = {"EASY", "MEDIUM", "HARD"};
         int[] weights = {1, 2, 3};
         double totalScore = 0;
-        int gamesPerDifficulty = 3;
+        int gamesPerDifficulty = 5;
 
         for (int i = 0; i < difficulties.length; i++) {
             double difficultyScore = 0;
@@ -26,24 +26,15 @@ public class GeneticAlgorithm {
     }
     
     public static Chromosome mutate(Chromosome chromosome, double mutationRate) {
-        double[] mutatedGenes = chromosome.getGenes().clone();
+        if (random.nextDouble() > mutationRate) {
+            return chromosome; // nao muta se o numero aleatorio for maior que a taxa de mutacao
+        }
+        double[] mutatedGenes = chromosome.getGenes();
         for (int i = 0; i < mutatedGenes.length; i++) {
             mutatedGenes[i] = (2 * random.nextDouble()) - 1; // random entre -1 e 1
         }
+
         return new Chromosome(mutatedGenes, 0.0);  // score 0 inicial para novo cromossomo
-    }
-
-    // crossover usando crossover point
-    public static Chromosome crossoverPoint(Chromosome chromosome1, Chromosome chromosome2) {
-        double[] genes1 = chromosome1.getGenes();
-        double[] genes2 = chromosome2.getGenes();
-        int crossoverPoint = random.nextInt(genes1.length - 1) + 1;
-        double[] newGenes = new double[genes1.length];
-
-        System.arraycopy(genes1, 0, newGenes, 0, crossoverPoint);
-        System.arraycopy(genes2, crossoverPoint, newGenes, crossoverPoint, genes2.length - crossoverPoint);
-
-        return new Chromosome(newGenes, 0.0);  // score 0 inicial para novo cromossomo
     }
 
     // crossover usando media
@@ -56,7 +47,8 @@ public class GeneticAlgorithm {
             newGenes[i] = (genes1[i] + genes2[i]) / 2.0; // media dos genes correspondentes
         }
 
-        return new Chromosome(newGenes, 0.0);  // score 0 inicial para o novo cromossomo
+        Chromosome child = new Chromosome(newGenes, 0.0); // score nao avaliado inicial para novo cromossomo
+        return child;
     }
 
 
@@ -68,7 +60,8 @@ public class GeneticAlgorithm {
             tournament.add(population.get(i));
         }
 
-        return Collections.max(tournament, Comparator.comparingDouble(Chromosome::getScore));
+        Chromosome parent = Collections.max(tournament, Comparator.comparingDouble(Chromosome::getScore));
+        return parent;
     }
 
     public static void geneticAlgorithm(int populationSize, int generations, double mutationRate, int tournamentSize) throws Exception {
@@ -87,7 +80,7 @@ public class GeneticAlgorithm {
         for (int generation = 1; generation <= generations; generation++) {
             // System.out.printf("\nGeneration %d/%d%n", generation, generations);
 
-            // funcao de avaliacao de cada cromossomo
+            // funcao de avaliacao de cada cromossomo na populacao
             for (Chromosome chromosome : population) {
                 double score = evaluate(chromosome);
                 chromosome.setScore(score);
@@ -97,9 +90,9 @@ public class GeneticAlgorithm {
             population.sort(Comparator.comparingDouble(Chromosome::getScore).reversed());
 
             // exibir os scores
-            // for (Chromosome cromosome : population) {
-            //     System.out.println(cromosome.getScore());
-            // }
+            for (Chromosome cromosome : population) {
+                System.out.println(cromosome.getScore());
+            }
 
             Chromosome bestChromosome = population.get(0);
             double bestScore = bestChromosome.getScore();
@@ -115,18 +108,15 @@ public class GeneticAlgorithm {
             // nova populacao
             List<Chromosome> newPopulation = new ArrayList<>();
 
-            // elitismo passa melhores chromossomos para a nova populacao
-            newPopulation.add(bestChromosome);           // melhor
-            // newPopulation.add(population.get(1));     // 2 melhor
-            // newPopulation.add(population.get(2));     // 3 melhor
+            // elitismo passa melhor chromossom para a nova populacao
+            newPopulation.add(bestChromosome);          
 
             while (newPopulation.size() < populationSize) {
                 Chromosome parent1 = tournamentSelection(population, tournamentSize);
                 Chromosome parent2 = tournamentSelection(population, tournamentSize);
+                // System.out.println("Parent1: " + parent1.getScore() + " | Parent2: " + parent2.getScore());
                 Chromosome child = crossover(parent1, parent2);
                 child = mutate(child, mutationRate);
-                // double childScore = evaluate(child);
-                // child.setScore(childScore);
                 newPopulation.add(child);
             }
 
@@ -172,8 +162,7 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 1000, 0.1, 4);
+        geneticAlgorithm(10, 1000, 0.1, 2);
         // games - populationSize - generations - mutationRate - elitism - results
-        // 5     - 10             - 5000        - 0.1           - 3      - 60
     }
 }

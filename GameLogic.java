@@ -40,10 +40,10 @@ public class GameLogic {
 
         if (!availableMoves.contains(move)) {
             // System.out.println("Rede jogou em " + (move + 1) + " jogada invalida");
-            return -1;
+            return -1; // jogada invalida retorna -1
         } else {
             this.board[move] = 2;
-            return move;
+            return move; // jogada valida retorna a posicao
         }
     }
 
