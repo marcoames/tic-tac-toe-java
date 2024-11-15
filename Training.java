@@ -6,47 +6,52 @@ public class Training {
     }
 
     public int playGame(double[] chromosome, String gameDifficulty) {
+        // define a rede neural para o jogo atual
         game.setNeuralNetwork(chromosome);
 
         int score = 0;
 
         while (true) {
-            
-            // jogada da rede
+            // jogada da rede neural
             int realMove = game.neuralNetworkMove();
 
-            // se jogada invalida perde 10 pontos e acaba o jogo
+            // se a jogada for invalida, perde pontos e o jogo acaba
             if (realMove == -1) {
-                return -10;  
+                return - 100;  
             }
 
-            // verifica se jogo acabou depois da jogada da rede           
+            // recompensa por uma jogada valida
+            score += 5;
+
+            // verifica se o jogo acabou apos a jogada da rede neural
             if (isGameOver()) {
-                return getScore("Xganha", score);  // rede ganha
+                return getScore("Xganha", score);  // rede neural venceu
             }
 
             // jogada do computador
             game.computerMove(gameDifficulty);
 
-            // verifica se jogo acabou depois da jogada do computador
+            // verifica se o jogo acabou apos a jogada do computador
             if (isGameOver()) {
-                return getScore("Oganha", score);  // computador ganha
+                return getScore("Oganha", score);  // computador venceu
             }
         }
     }
 
     private boolean isGameOver() {
+        // verifica o estado do jogo (se ainda esta em andamento)
         String result = game.checkWinner();
         return !result.equals("Temjogo");  // jogo acabou
     }
 
     private int getScore(String result, int score) {
+        // ajusta a pontuacao com base no resultado do jogo
         if (result.equals("Xganha")) {
-            return score + 20;  // rede ganha
+            return score + 50;  // recompensa por vitoria da rede
         } else if (result.equals("Oganha")) {
-            return score + 5;  // computador ganha
+            return score - 10;  // penalizacao por derrota
         } else {
-            return score + 10;  // empate
+            return score + 25;  // recompensa por empate
         }
     }
 }

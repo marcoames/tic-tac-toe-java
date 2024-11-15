@@ -11,8 +11,9 @@ public class PlayerXNeuralNetwork {
         double[] chromosome = loadChromosomeFromCsv("./tic-tac-toe-java/best_chromosome.csv");
         
         // define uma rede neural para o jogo com o cromossomo importado
-        NeuralNetwork neuralNetwork = new NeuralNetwork(chromosome);
         game.setNeuralNetwork(chromosome);
+        
+        NeuralNetwork neuralNetwork = new NeuralNetwork(chromosome);
         neuralNetwork.printWeights();
 
         

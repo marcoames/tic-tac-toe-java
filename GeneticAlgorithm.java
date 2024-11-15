@@ -90,9 +90,11 @@ public class GeneticAlgorithm {
             population.sort(Comparator.comparingDouble(Chromosome::getScore).reversed());
 
             // exibir os scores
-            for (Chromosome cromosome : population) {
-                System.out.println(cromosome.getScore());
-            }
+            // for (Chromosome cromosome : population) {
+            //     System.out.println(cromosome.getScore());
+            // }
+
+
 
             Chromosome bestChromosome = population.get(0);
             double bestScore = bestChromosome.getScore();
@@ -103,7 +105,12 @@ public class GeneticAlgorithm {
                 globalBestChromosome = bestChromosome;
             }
             
-            System.out.printf("Generation %d/%d\t BestScore: %.2f \tGlobalBestScore: %.2f%n", generation, generations, bestScore, globalBestScore);
+            // System.out.printf("Generation %d/%d\t BestScore: %.2f \tGlobalBestScore: %.2f%n", generation, generations, bestScore, globalBestScore);
+
+            double averageScore = population.stream().mapToDouble(Chromosome::getScore).average().orElse(0.0);
+            System.out.printf("Generation %d/%d\t AvgScore: %.2f\t BestScore: %.2f\t GlobalBestScore: %.2f%n", 
+            generation, generations, averageScore, bestScore, globalBestScore);
+
 
             // nova populacao
             List<Chromosome> newPopulation = new ArrayList<>();
@@ -162,7 +169,7 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 1000, 0.1, 2);
+        geneticAlgorithm(10, 5000, 0.1, 2);
         // games - populationSize - generations - mutationRate - elitism - results
     }
 }
