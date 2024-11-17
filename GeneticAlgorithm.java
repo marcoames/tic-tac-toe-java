@@ -108,7 +108,7 @@ public class GeneticAlgorithm {
             // System.out.printf("Generation %d/%d\t BestScore: %.2f \tGlobalBestScore: %.2f%n", generation, generations, bestScore, globalBestScore);
 
             double averageScore = population.stream().mapToDouble(Chromosome::getScore).average().orElse(0.0);
-            System.out.printf("Generation %d/%d\t AvgScore: %.2f\t BestScore: %.2f\t GlobalBestScore: %.2f%n", 
+            System.out.printf("Generation %d/%d\t  AvgScore: %.2f\t  BestScore: %.2f\t  GlobalBestScore: %.2f%n", 
             generation, generations, averageScore, bestScore, globalBestScore);
 
 
@@ -133,12 +133,12 @@ public class GeneticAlgorithm {
 
         // Salvamento e exibição dos melhores resultados
         System.out.printf("\nGlobal Best Score: %.2f%n", globalBestScore);
-        saveBestChromosomeToCsv("./tic-tac-toe-java/best_chromosome.csv", globalBestChromosome.getGenes());
+        saveBestChromosomeToCsv("best_chromosome.csv", globalBestChromosome.getGenes());
 
         NeuralNetwork nn = new NeuralNetwork(globalBestChromosome.getGenes());
         nn.printWeights();
 
-        saveScoresToFile((ArrayList<Double>) bestScores, "./tic-tac-toe-java/best_scores.txt");
+        saveScoresToFile((ArrayList<Double>) bestScores, "best_scores.txt");
 
     }
 
@@ -169,7 +169,6 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 5000, 0.1, 2);
-        // games - populationSize - generations - mutationRate - elitism - results
+        geneticAlgorithm(10, 10000, 0.1, 2);
     }
 }
