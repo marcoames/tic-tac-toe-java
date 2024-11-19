@@ -169,6 +169,6 @@ public class GeneticAlgorithm {
 
     public static void main(String[] args) throws Exception {
         random.setSeed(42);
-        geneticAlgorithm(10, 10000, 0.1, 2);
+        geneticAlgorithm(10, 15000, 0.1, 2);
     }
 }

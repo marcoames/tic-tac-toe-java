@@ -119,6 +119,20 @@ public class GameLogic {
             }
         }
     }
+    public void userMovexMinimax() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println(Arrays.toString(this.board));
+            System.out.print("Escolha sua posição (1-9): ");
+            int move = scanner.nextInt() - 1;
+            if (move >= 0 && move < 9 && this.board[move] == 0) {
+                this.board[move] = 2;
+                break;
+            } else {
+                System.out.println("Posição já ocupada ou inválida. Escolha outra.");
+            }
+        }
+    }
 
     public void computerMove(String difficulty) {
         if (difficulty.equals("EASY")) { // joga minimax 25% das vezes
