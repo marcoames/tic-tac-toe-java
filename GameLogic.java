@@ -105,7 +105,7 @@ public class GameLogic {
     }
 
 
-    public void userMove() {
+    public void userMove() { // joga contra a rede com O
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println(Arrays.toString(this.board));
@@ -119,7 +119,7 @@ public class GameLogic {
             }
         }
     }
-    public void userMovexMinimax() {
+    public void userMovexMinimax() { // joga contra o minimax com X
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println(Arrays.toString(this.board));
